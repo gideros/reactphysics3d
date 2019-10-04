@@ -748,8 +748,13 @@ void DynamicsWorld::computeIslands() {
                 if (contactManifold->isAlreadyInIsland()) continue;
 
                 // Get the other body of the contact manifold
+#ifdef _NO_THROW //Implies no rtti, thus no dynamic_cast
+                RigidBody* body1 = (RigidBody*)(contactManifold->getBody1());
+                RigidBody* body2 = (RigidBody*)(contactManifold->getBody2());
+#else
                 RigidBody* body1 = dynamic_cast<RigidBody*>(contactManifold->getBody1());
                 RigidBody* body2 = dynamic_cast<RigidBody*>(contactManifold->getBody2());
+#endif
 
                 // If the colliding body is a RigidBody (and not a CollisionBody instead)
                 if (body1 != nullptr && body2 != nullptr) {

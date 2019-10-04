@@ -476,7 +476,9 @@ class Map {
                         return;
                     }
                     else {
+#ifndef _NO_THROW
                         throw std::runtime_error("The key and value pair already exists in the map");
+#endif
                     }
                 }
             }
@@ -649,7 +651,9 @@ class Map {
             }
 
             if (entry == -1) {
+#ifndef _NO_THROW
                 throw std::runtime_error("No item with given key has been found in the map");
+#endif
             }
 
             assert(mEntries[entry].keyValue != nullptr);
@@ -667,7 +671,9 @@ class Map {
             }
 
             if (entry == -1) {
+#ifndef _NO_THROW
                 throw std::runtime_error("No item with given key has been found in the map");
+#endif
             }
 
             assert(mEntries[entry].keyValue != nullptr);

@@ -1,6 +1,6 @@
 /********************************************************************************
 * ReactPhysics3D physics library, http://www.reactphysics3d.com                 *
-* Copyright (c) 2010-2019 Daniel Chappuis                                       *
+* Copyright (c) 2010-2020 Daniel Chappuis                                       *
 *********************************************************************************
 *                                                                               *
 * This software is provided 'as-is', without any express or implied warranty.   *
@@ -24,9 +24,9 @@
 ********************************************************************************/
 
 // Libraries
-#include "Quaternion.h"
-#include "Vector3.h"
-#include "Matrix3x3.h"
+#include <reactphysics3d/mathematics/Quaternion.h>
+#include <reactphysics3d/mathematics/Vector3.h>
+#include <reactphysics3d/mathematics/Matrix3x3.h>
 #include <cassert>
 
 // Namespace
@@ -106,7 +106,7 @@ Quaternion::Quaternion(const Matrix3x3& matrix) {
             // Compute the quaternion
             x = decimal(0.5) * r;
             y = (matrix[0][1] + matrix[1][0]) * s;
-            z = (matrix[2][0] - matrix[0][2]) * s;
+            z = (matrix[2][0] + matrix[0][2]) * s;
             w = (matrix[2][1] - matrix[1][2]) * s;
         }
     }

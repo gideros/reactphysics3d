@@ -1,6 +1,6 @@
 /********************************************************************************
 * ReactPhysics3D physics library, http://www.reactphysics3d.com                 *
-* Copyright (c) 2010-2020 Daniel Chappuis                                       *
+* Copyright (c) 2010-2022 Daniel Chappuis                                       *
 *********************************************************************************
 *                                                                               *
 * This software is provided 'as-is', without any express or implied warranty.   *
@@ -117,7 +117,7 @@ void FixedJointComponents::allocate(uint32 nbComponentsToAllocate) {
 }
 
 // Add a component
-void FixedJointComponents::addComponent(Entity jointEntity, bool isSleeping, const FixedJointComponent& component) {
+void FixedJointComponents::addComponent(Entity jointEntity, bool isSleeping, const FixedJointComponent& /*component*/) {
 
     // Prepare to add new component (allocate memory if necessary and compute insertion index)
     uint32 index = prepareAddComponent(isSleeping);
@@ -163,7 +163,7 @@ void FixedJointComponents::moveComponentToIndex(uint32 srcIndex, uint32 destInde
     new (mR2World + destIndex) Vector3(mR2World[srcIndex]);
     new (mI1 + destIndex) Matrix3x3(mI1[srcIndex]);
     new (mI2 + destIndex) Matrix3x3(mI2[srcIndex]);
-    new (mImpulseTranslation + destIndex) Vector3(mImpulseRotation[srcIndex]);
+    new (mImpulseTranslation + destIndex) Vector3(mImpulseTranslation[srcIndex]);
     new (mImpulseRotation + destIndex) Vector3(mImpulseRotation[srcIndex]);
     new (mInverseMassMatrixTranslation + destIndex) Matrix3x3(mInverseMassMatrixTranslation[srcIndex]);
     new (mInverseMassMatrixRotation + destIndex) Matrix3x3(mInverseMassMatrixRotation[srcIndex]);

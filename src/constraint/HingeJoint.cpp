@@ -1,6 +1,6 @@
 /********************************************************************************
 * ReactPhysics3D physics library, http://www.reactphysics3d.com                 *
-* Copyright (c) 2010-2020 Daniel Chappuis                                       *
+* Copyright (c) 2010-2022 Daniel Chappuis                                       *
 *********************************************************************************
 *                                                                               *
 * This software is provided 'as-is', without any express or implied warranty.   *
@@ -34,22 +34,43 @@ using namespace reactphysics3d;
 // Constructor
 HingeJoint::HingeJoint(Entity entity, PhysicsWorld &world, const HingeJointInfo& jointInfo) : Joint(entity, world) {
 
-    const decimal lowerLimit = mWorld.mHingeJointsComponents.getLowerLimit(mEntity);
-    const decimal upperLimit = mWorld.mHingeJointsComponents.getUpperLimit(mEntity);
-    assert(lowerLimit <= decimal(0) && lowerLimit >= decimal(-2.0) * PI);
-    assert(upperLimit >= decimal(0) && upperLimit <= decimal(2.0) * PI);
+    Vector3 anchorPointBody1Local;
+    Vector3 anchorPointBody2Local;
+    Vector3 hingeLocalAxisBody1;
+    Vector3 hingeLocalAxisBody2;
 
-    // Compute the local-space anchor point for each body
     const Transform& transform1 = mWorld.mTransformComponents.getTransform(jointInfo.body1->getEntity());
     const Transform& transform2 = mWorld.mTransformComponents.getTransform(jointInfo.body2->getEntity());
-    mWorld.mHingeJointsComponents.setLocalAnchorPointBody1(mEntity, transform1.getInverse() * jointInfo.anchorPointWorldSpace);
-    mWorld.mHingeJointsComponents.setLocalAnchorPointBody2(mEntity, transform2.getInverse() * jointInfo.anchorPointWorldSpace);
 
-    // Compute the local-space hinge axis
-    Vector3 hingeLocalAxisBody1 = transform1.getOrientation().getInverse() * jointInfo.rotationAxisWorld;
-    Vector3 hingeLocalAxisBody2 = transform2.getOrientation().getInverse() * jointInfo.rotationAxisWorld;
-    hingeLocalAxisBody1.normalize();
-    hingeLocalAxisBody2.normalize();
+    if (jointInfo.isUsingLocalSpaceAnchors) {
+
+        anchorPointBody1Local = jointInfo.anchorPointBody1LocalSpace;
+        anchorPointBody2Local = jointInfo.anchorPointBody2LocalSpace;
+
+        hingeLocalAxisBody1 = jointInfo.rotationAxisBody1Local;
+        hingeLocalAxisBody2 = jointInfo.rotationAxisBody2Local;
+    }
+    else {
+
+        // Compute the local-space anchor point for each body
+        anchorPointBody1Local = transform1.getInverse() * jointInfo.anchorPointWorldSpace;
+        anchorPointBody2Local = transform2.getInverse() * jointInfo.anchorPointWorldSpace;
+
+        // Compute the local-space hinge axis
+        hingeLocalAxisBody1 = transform1.getOrientation().getInverse() * jointInfo.rotationAxisWorld;
+        hingeLocalAxisBody2 = transform2.getOrientation().getInverse() * jointInfo.rotationAxisWorld;
+        hingeLocalAxisBody1.normalize();
+        hingeLocalAxisBody2.normalize();
+    }
+
+    const decimal lowerLimit = mWorld.mHingeJointsComponents.getLowerLimit(mEntity);
+    const decimal upperLimit = mWorld.mHingeJointsComponents.getUpperLimit(mEntity);
+    assert(lowerLimit <= decimal(0) && lowerLimit >= decimal(-2.0) * PI_RP3D);
+    assert(upperLimit >= decimal(0) && upperLimit <= decimal(2.0) * PI_RP3D);
+
+    mWorld.mHingeJointsComponents.setLocalAnchorPointBody1(mEntity, anchorPointBody1Local);
+    mWorld.mHingeJointsComponents.setLocalAnchorPointBody2(mEntity, anchorPointBody2Local);
+
     mWorld.mHingeJointsComponents.setHingeLocalAxisBody1(mEntity, hingeLocalAxisBody1);
     mWorld.mHingeJointsComponents.setHingeLocalAxisBody2(mEntity, hingeLocalAxisBody2);
 
@@ -99,7 +120,7 @@ void HingeJoint::setMinAngleLimit(decimal lowerLimit) {
 
     const decimal limit = mWorld.mHingeJointsComponents.getLowerLimit(mEntity);
 
-    assert(limit <= decimal(0.0) && limit >= decimal(-2.0) * PI);
+    assert(limit <= decimal(0.0) && limit >= decimal(-2.0) * PI_RP3D);
 
     if (lowerLimit != limit) {
 
@@ -118,7 +139,7 @@ void HingeJoint::setMaxAngleLimit(decimal upperLimit) {
 
     const decimal limit = mWorld.mHingeJointsComponents.getUpperLimit(mEntity);
 
-    assert(limit >= decimal(0) && limit <= decimal(2.0) * PI);
+    assert(limit >= decimal(0) && limit <= decimal(2.0) * PI_RP3D);
 
     if (upperLimit != limit) {
 
@@ -141,6 +162,9 @@ void HingeJoint::resetLimits() {
 }
 
 // Set the motor speed
+/**
+ * @param motorSpeed The speed of the motor
+ */
 void HingeJoint::setMotorSpeed(decimal motorSpeed) {
 
     if (motorSpeed != mWorld.mHingeJointsComponents.getMotorSpeed(mEntity)) {
@@ -207,7 +231,7 @@ decimal HingeJoint::getMaxAngleLimit() const {
 /**
  * @return The current speed of the joint motor (in radian per second)
  */
- decimal HingeJoint::getMotorSpeed() const {
+decimal HingeJoint::getMotorSpeed() const {
     return mWorld.mHingeJointsComponents.getMotorSpeed(mEntity);
 }
 
@@ -215,7 +239,7 @@ decimal HingeJoint::getMaxAngleLimit() const {
 /**
  * @return The maximum torque of the joint motor (in Newtons)
  */
- decimal HingeJoint::getMaxMotorTorque() const {
+decimal HingeJoint::getMaxMotorTorque() const {
     return mWorld.mHingeJointsComponents.getMaxMotorTorque(mEntity);
 }
 
@@ -224,8 +248,56 @@ decimal HingeJoint::getMaxAngleLimit() const {
  * @param timeStep The current time step (in seconds)
  * @return The intensity of the current torque (in Newtons) of the joint motor
  */
- decimal HingeJoint::getMotorTorque(decimal timeStep) const {
+decimal HingeJoint::getMotorTorque(decimal timeStep) const {
     return mWorld.mHingeJointsComponents.getImpulseMotor(mEntity) / timeStep;
+}
+
+// Return the current hinge angle
+/**
+ * @return The current hinge angle (in radians) in the range [-pi; pi]
+ */
+decimal HingeJoint::getAngle() const {
+
+    // Get the bodies entities
+    const Entity body1Entity = mWorld.mJointsComponents.getBody1Entity(mEntity);
+    const Entity body2Entity = mWorld.mJointsComponents.getBody2Entity(mEntity);
+
+    const Quaternion& orientationBody1 = mWorld.mTransformComponents.getTransform(body1Entity).getOrientation();
+    const Quaternion& orientationBody2 = mWorld.mTransformComponents.getTransform(body2Entity).getOrientation();
+
+    // Compute the current angle around the hinge axis
+    return mWorld.mConstraintSolverSystem.mSolveHingeJointSystem.computeCurrentHingeAngle(mEntity, orientationBody1, orientationBody2);
+}
+
+// Return the force (in Newtons) on body 2 required to satisfy the joint constraint in world-space
+/**
+ * @return The current force (in Newtons) applied on body 2
+ */
+Vector3 HingeJoint::getReactionForce(decimal timeStep) const {
+    assert(timeStep > MACHINE_EPSILON);
+    return mWorld.mHingeJointsComponents.getImpulseTranslation(mEntity) / timeStep;
+}
+
+// Return the torque (in Newtons * meters) on body 2 required to satisfy the joint constraint in world-space
+/**
+ * @return The current torque (in Newtons * meters) applied on body 2
+ */
+Vector3 HingeJoint::getReactionTorque(decimal timeStep) const {
+
+    assert(timeStep > MACHINE_EPSILON);
+
+    const uint32 jointIndex = mWorld.mHingeJointsComponents.getEntityIndex(mEntity);
+
+    const Vector2& impulseRotation = mWorld.mHingeJointsComponents.mImpulseRotation[jointIndex];
+    const Vector3& b2CrossA1 = mWorld.mHingeJointsComponents.mB2CrossA1[jointIndex];
+    const Vector3& c2CrossA1 = mWorld.mHingeJointsComponents.mC2CrossA1[jointIndex];
+
+    Vector3 impulseJoint = b2CrossA1 * impulseRotation.x + c2CrossA1 * impulseRotation.y;
+    Vector3 impulseLowerLimit = mWorld.mHingeJointsComponents.mImpulseLowerLimit[jointIndex] * mWorld.mHingeJointsComponents.mA1[jointIndex];
+    Vector3 impulseUpperLimit = -mWorld.mHingeJointsComponents.mImpulseUpperLimit[jointIndex] * mWorld.mHingeJointsComponents.mA1[jointIndex];
+    Vector3 impulseMotor = mWorld.mHingeJointsComponents.mImpulseMotor[jointIndex] * mWorld.mHingeJointsComponents.mA1[jointIndex];
+
+    return (impulseJoint + impulseLowerLimit + impulseUpperLimit + impulseMotor) / timeStep;
 }
 
 // Return the number of bytes used by the joint

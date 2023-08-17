@@ -117,6 +117,9 @@ void* HeapAllocator::allocate(size_t size) {
     // We cannot allocate zero bytes
     if (size == 0) return nullptr;
 
+    //Ensure allocated size is a multiple of 8
+    size=(size+7)&(~7);
+
 #ifndef NDEBUG
         mNbTimesAllocateMethodCalled++;
 #endif

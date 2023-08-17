@@ -63,20 +63,21 @@ class HeapAllocator : public MemoryAllocator {
                 /// True if the memory unit is currently allocated
                 bool isAllocated;
 
+                /// True if the next memory unit has been allocated with the same call to malloc()
+                bool isNextContiguousMemory;
+
                 /// Pointer to the previous memory unit
                 MemoryUnitHeader* previousUnit;
 
                 /// Pointer to the next memory unit
                 MemoryUnitHeader* nextUnit;
 
-                /// True if the next memory unit has been allocated with the same call to malloc()
-                bool isNextContiguousMemory;
 
                 // -------------------- Methods -------------------- //
 
                 MemoryUnitHeader(size_t size, MemoryUnitHeader* previousUnit, MemoryUnitHeader* nextUnit, bool isNextContiguousMemory)
-                    : size(size), isAllocated(false), previousUnit(previousUnit),
-                      nextUnit(nextUnit), isNextContiguousMemory(isNextContiguousMemory) {
+                    : size(size), isAllocated(false), isNextContiguousMemory(isNextContiguousMemory), previousUnit(previousUnit),
+                      nextUnit(nextUnit) {
 
                     assert(size > 0);
                 }

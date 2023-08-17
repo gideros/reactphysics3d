@@ -164,6 +164,7 @@ class CollisionBody {
 
 #endif
 
+        PhysicsWorld &getWorld() { return mWorld; };
         // -------------------- Friendship -------------------- //
 
         friend class PhysicsWorld;

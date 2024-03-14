@@ -32,6 +32,7 @@
 #include <utility>
 #include <sstream>
 #include <string>
+#include <cstdint>
 #include <reactphysics3d/decimal.h>
 #include <reactphysics3d/containers/Pair.h>
 

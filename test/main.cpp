@@ -34,17 +34,21 @@
 #include "tests/mathematics/TestMathematicsFunctions.h"
 #include "tests/collision/TestPointInside.h"
 #include "tests/collision/TestRaycast.h"
-#include "tests/collision/TestCollisionWorld.h"
+#include "tests/collision/TestWorldQueries.h"
 #include "tests/collision/TestAABB.h"
 #include "tests/collision/TestDynamicAABBTree.h"
 #include "tests/collision/TestHalfEdgeStructure.h"
 #include "tests/collision/TestTriangleVertexArray.h"
+#include "tests/collision/TestConvexMesh.h"
+#include "tests/collision/TestTriangleMesh.h"
+#include "tests/collision/TestHeightField.h"
 #include "tests/containers/TestArray.h"
 #include "tests/containers/TestMap.h"
 #include "tests/containers/TestSet.h"
 #include "tests/containers/TestDeque.h"
 #include "tests/containers/TestStack.h"
 #include "tests/engine/TestRigidBody.h"
+#include "tests/utils/TestQuickHull.h"
 
 using namespace reactphysics3d;
 
@@ -76,10 +80,16 @@ int main() {
     testSuite.addTest(new TestPointInside("IsPointInside"));
     testSuite.addTest(new TestTriangleVertexArray("TriangleVertexArray"));
     testSuite.addTest(new TestRaycast("Raycasting"));
-    testSuite.addTest(new TestCollisionWorld("CollisionWorld"));
+    testSuite.addTest(new TestWorldQueries("WorldQueries"));
     testSuite.addTest(new TestDynamicAABBTree("DynamicAABBTree"));
     testSuite.addTest(new TestHalfEdgeStructure("HalfEdgeStructure"));
+    testSuite.addTest(new TestConvexMesh("ConvexMesh"));
+    testSuite.addTest(new TestTriangleMesh("TriangleMesh"));
+    testSuite.addTest(new TestHeightField("HeightField"));
 
+    // ---------- Utils tests ---------- //
+
+    testSuite.addTest(new TestQuickHull("QuickHull"));
 
     // ---------- Engine tests ---------- //
 

@@ -46,6 +46,7 @@ class HeightField : public PhysicsObject {
         float mHeightData[NB_POINTS_WIDTH * NB_POINTS_LENGTH];
 
         /// Collision shape
+        rp3d::HeightField* mHeightField;
         rp3d::HeightFieldShape* mHeightFieldShape;
         rp3d::Collider* mCollider;
 
@@ -88,7 +89,9 @@ class HeightField : public PhysicsObject {
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        HeightField(bool createRigidBody, rp3d::PhysicsCommon& physicsCommon, rp3d::PhysicsWorld* physicsWorld);
+        HeightField(reactphysics3d::BodyType type, bool isSimulationCollider,
+                    rp3d::PhysicsCommon& physicsCommon, rp3d::PhysicsWorld* physicsWorld,
+                    const reactphysics3d::Vector3& scaling = reactphysics3d::Vector3(1, 1, 1));
 
         /// Destructor
         virtual ~HeightField() override;

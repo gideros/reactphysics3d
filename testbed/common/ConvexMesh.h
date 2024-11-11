@@ -34,15 +34,11 @@
 // Class ConvexMesh
 class ConvexMesh : public PhysicsObject {
 
-    private :
+    protected :
 
         // -------------------- Attributes -------------------- //
 
-        rp3d::PolygonVertexArray::PolygonFace* mPolygonFaces;
-
-        rp3d::PolygonVertexArray* mPolygonVertexArray;
-
-        rp3d::PolyhedronMesh* mPolyhedronMesh;
+        rp3d::ConvexMesh* mConvexMesh;
 
         /// Collision shape
         rp3d::ConvexMeshShape* mConvexShape;
@@ -77,6 +73,9 @@ class ConvexMesh : public PhysicsObject {
 
         // -------------------- Methods -------------------- //
 
+        /// Constructor (only for derived classes)
+        ConvexMesh(rp3d::PhysicsCommon& physicsCommon, rp3d::PhysicsWorld* physicsWorld, const std::string& meshPath);
+
         /// Create the Vertex Buffer Objects used to render with OpenGL.
         void createVBOAndVAO();
 
@@ -88,7 +87,7 @@ class ConvexMesh : public PhysicsObject {
         // -------------------- Methods -------------------- //
 
         /// Constructor
-        ConvexMesh(bool createRigidBody, rp3d::PhysicsCommon& physicsCommon, rp3d::PhysicsWorld* physicsWorld,
+        ConvexMesh(reactphysics3d::BodyType type, bool isSimulationCollider, rp3d::PhysicsCommon& physicsCommon, rp3d::PhysicsWorld* physicsWorld,
                    const std::string& meshPath, const reactphysics3d::Vector3& scaling = rp3d::Vector3(1, 1, 1));
 
         /// Destructor

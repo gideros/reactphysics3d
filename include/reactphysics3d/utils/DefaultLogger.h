@@ -1,6 +1,6 @@
 /********************************************************************************
 * ReactPhysics3D physics library, http://www.reactphysics3d.com                 *
-* Copyright (c) 2010-2022 Daniel Chappuis                                       *
+* Copyright (c) 2010-2024 Daniel Chappuis                                       *
 *********************************************************************************
 *                                                                               *
 * This software is provided 'as-is', without any express or implied warranty.   *
@@ -104,6 +104,10 @@ class DefaultLogger : public Logger {
 
         };
 
+        // Class TextFormatter
+        /**
+         * Format the logs with simple text
+         */
         class TextFormatter : public Formatter {
 
             public:
@@ -168,6 +172,10 @@ class DefaultLogger : public Logger {
                 }
         };
 
+        // Class HtmlFormatter
+        /**
+         * Format the logs with HTML
+         */
         class HtmlFormatter : public Formatter {
 
             private:
@@ -344,7 +352,10 @@ class DefaultLogger : public Logger {
         };
 
 
-        /// Log destination
+        // Class Destination
+        /**
+         * destination for the logs
+         */
         class Destination {
 
             public:
@@ -373,6 +384,10 @@ class DefaultLogger : public Logger {
                 virtual size_t getSizeBytes() const=0;
         };
 
+        // Class FileDestination
+        /**
+         * File destination for the logs
+         */
         class FileDestination : public Destination {
 
             private:
@@ -427,7 +442,10 @@ class DefaultLogger : public Logger {
                 }
         };
 
-        /// Stream destination to output the logs into a stream
+        // Class TextFormatter
+        /**
+         * Stream destination for the logs
+         */
         class StreamDestination : public Destination {
 
             private:
@@ -518,9 +536,9 @@ class DefaultLogger : public Logger {
 
 }
 
-// Hash function for struct VerticesPair
 namespace std {
 
+  // Hash function for struct VerticesPair
   template<> struct hash<reactphysics3d::DefaultLogger::Format> {
 
     size_t operator()(const reactphysics3d::DefaultLogger::Format format) const {

@@ -9,12 +9,15 @@ set (RP3D_TESTS_HEADERS
     "Test.h"
     "TestSuite.h"
     "tests/collision/TestAABB.h"
-    "tests/collision/TestCollisionWorld.h"
+    "tests/collision/TestWorldQueries.h"
     "tests/collision/TestDynamicAABBTree.h"
     "tests/collision/TestHalfEdgeStructure.h"
     "tests/collision/TestPointInside.h"
     "tests/collision/TestRaycast.h"
     "tests/collision/TestTriangleVertexArray.h"
+    "tests/collision/TestConvexMesh.h"
+    "tests/collision/TestHeightField.h"
+    "tests/collision/TestTriangleMesh.h"
     "tests/containers/TestArray.h"
     "tests/containers/TestMap.h"
     "tests/containers/TestSet.h"
@@ -28,6 +31,7 @@ set (RP3D_TESTS_HEADERS
     "tests/mathematics/TestVector2.h"
     "tests/mathematics/TestVector3.h"
     "tests/engine/TestRigidBody.h"
+    "tests/utils/TestQuickHull.h"
 )
 
 # Source files

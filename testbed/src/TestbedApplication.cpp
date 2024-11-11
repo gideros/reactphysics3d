@@ -85,8 +85,8 @@ TestbedApplication::TestbedApplication()
                      mWindowToFramebufferRatio(Vector2(1, 1)), mIsShadowMappingEnabled(true),
                      mAreContactPointsDisplayed(false), mAreContactNormalsDisplayed(false),
                      mAreBroadPhaseAABBsDisplayed(false), mAreCollidersAABBsDisplayed(false),
-                     mAreCollisionShapesDisplayed(false), mAreObjectsWireframeEnabled(false),
-                     mIsVSyncEnabled(false), mIsDebugRendererEnabled(false) {
+                     mAreCollisionShapesDisplayed(false), mAreCollisionShapesNormalsDisplayed(false),
+                     mAreObjectsWireframeEnabled(false), mIsVSyncEnabled(false), mIsDebugRendererEnabled(false) {
 
     init();
 }
@@ -191,6 +191,7 @@ void TestbedApplication::start() {
 
         // Enable OpenGL error reporting
         glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
         glDebugMessageCallback(onOpenGLError, 0);
     }
 #endif
@@ -474,6 +475,9 @@ void TestbedApplication::update() {
     // Display/Hide the collision shapes
     mCurrentScene->setAreCollisionShapesDisplayed(mAreCollisionShapesDisplayed);
 
+    // Display/Hide the collision shapes normals
+    mCurrentScene->setAreCollisionShapesNormalsDisplayed(mAreCollisionShapesNormalsDisplayed);
+
     // Enable/Disable wireframe mode
     mCurrentScene->setIsWireframeEnabled(mAreObjectsWireframeEnabled);
 
@@ -544,16 +548,14 @@ void TestbedApplication::notifyEngineSetttingsChanged() {
    mCurrentScene->updateEngineSettings();
 }
 
-void GLAPIENTRY TestbedApplication::onOpenGLError(GLenum /*source*/, GLenum type, GLuint /*id*/, GLenum /*severity*/, GLsizei /*length*/,
-                              const GLchar* /*message*/, const void* /*userParam*/ ) {
+void GLAPIENTRY TestbedApplication::onOpenGLError(GLenum source, GLenum type, GLuint /*id*/, GLenum severity, GLsizei /*length*/,
+                              const GLchar* message, const void* /*userParam*/ ) {
 
 #ifdef GL_DEBUG_OUTPUT
     if (type == GL_DEBUG_TYPE_ERROR) {
-        /*
-        fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+        fprintf( stderr, "GL CALLBACK: %s source = 0x%x, type = 0x%x, severity = 0x%x, message = %s\n",
                    ("** GL ERROR **" ),
-                    type, severity, message );
-         */
+                    source, type, severity, message );
     }
 #endif
 

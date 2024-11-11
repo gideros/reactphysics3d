@@ -33,7 +33,7 @@ using namespace ballandsocketjointscene;
 
 // Constructor
 BallAndSocketJointScene::BallAndSocketJointScene(const std::string& name, EngineSettings& settings, reactphysics3d::PhysicsCommon& physicsCommon)
-      : SceneDemo(name, settings, physicsCommon, true, SCENE_RADIUS) {
+      : SceneDemo(name, settings, physicsCommon, true) {
 
     // Compute the radius and the center of the scene
     openglframework::Vector3 center(0, 5, 0);
@@ -102,20 +102,18 @@ void BallAndSocketJointScene::reset() {
 void BallAndSocketJointScene::createBallAndSocketJoint() {
 
     // --------------- Create the box 1 --------------- //
-    mBox1 = new Box(true, Vector3(4, 4, 4) ,  mPhysicsCommon, mPhysicsWorld, mMeshFolderPath);
+    mBox1 = new Box(rp3d::BodyType::STATIC, true, Vector3(4, 4, 4) ,  mPhysicsCommon, mPhysicsWorld, mMeshFolderPath);
     mBox1->setTransform(rp3d::Transform(rp3d::Vector3(0, 8, 0), rp3d::Quaternion::identity()));
 
     // Set the box color
     mBox1->setColor(mObjectColorDemo);
     mBox1->setSleepingColor(mSleepingColorDemo);
 
-    mBox1->getRigidBody()->setType(rp3d::BodyType::STATIC);
-
     mPhysicsObjects.push_back(mBox1);
 
     // --------------- Create the box 2 --------------- //
 
-    mBox2 = new Box(true, Vector3(4, 8, 4),  mPhysicsCommon, mPhysicsWorld, mMeshFolderPath);
+    mBox2 = new Box(rp3d::BodyType::DYNAMIC, true, Vector3(4, 8, 4),  mPhysicsCommon, mPhysicsWorld, mMeshFolderPath);
     mBox2->setTransform(rp3d::Transform(rp3d::Vector3(0, 0, 0), rp3d::Quaternion::identity()));
 
     // Set the box color
@@ -139,5 +137,4 @@ void BallAndSocketJointScene::createBallAndSocketJoint() {
     mJoint = dynamic_cast<rp3d::BallAndSocketJoint*>(mPhysicsWorld->createJoint(jointInfo));
     mJoint->setConeLimitHalfAngle(90.0 * rp3d::PI_RP3D / 180.0);
     mJoint->enableConeLimit(true);
-
 }

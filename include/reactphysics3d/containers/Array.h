@@ -33,6 +33,7 @@
 #include <cstring>
 #include <iterator>
 #include <memory>
+#include <vector>
 
 namespace reactphysics3d {
 

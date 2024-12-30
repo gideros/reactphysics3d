@@ -145,7 +145,7 @@ class RigidBody : public Body {
         void enableGravity(bool isEnabled);
 
         /// Set the variable to know whether or not the body is sleeping
-        void setIsSleeping(bool isSleeping);
+        void setIsSleeping(bool isSleeping) override;
 
         /// Return the linear velocity damping factor
         decimal getLinearDamping() const;

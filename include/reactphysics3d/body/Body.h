@@ -117,6 +117,8 @@ class Body {
         /// Set whether or not the body is active
         virtual void setIsActive(bool isActive);
 
+        virtual void setIsSleeping(bool isSleeping) {};
+
         /// Return the current position and orientation
         const Transform& getTransform() const;
 

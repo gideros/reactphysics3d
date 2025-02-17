@@ -217,7 +217,7 @@ bool TriangleMesh::copyData(const TriangleVertexArray& triangleVertexArray, std:
 void TriangleMesh::removeUnusedVertices(Array<bool>& areUsedVertices) {
 
     // For each vertex of the user mesh
-    for (uint32 i=mVertices.size() - 1; i > 0; i--) {
+    for (int64 i=mVertices.size() - 1; i >= 0; i--) {
 
         // If the vertex is not used
         if (!areUsedVertices[i]) {
